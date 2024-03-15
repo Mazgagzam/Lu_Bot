@@ -12,3 +12,9 @@ class CommandPing(BaseFilter):
     async def __call__(self, inline_query: InlineQuery) -> bool:
         arg = inline_query.query
         return arg == "ping"
+
+
+class Filters:
+    @staticmethod
+    def lenght(text: str):
+        return len(text) > 70
