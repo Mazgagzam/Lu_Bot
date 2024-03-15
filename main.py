@@ -26,6 +26,7 @@ requests.post = sync_to_async(requests.post)
 init_ts = time.perf_counter()
 name = ""
 
+# First commit?
 
 async def update_name():
     global name
