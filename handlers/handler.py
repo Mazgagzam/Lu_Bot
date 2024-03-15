@@ -2,7 +2,6 @@ import os
 import time
 from datetime import timedelta
 
-
 from aiogram import Bot, types, Router, F
 from aiogram.filters import Command
 from aiogram.types.input_file import FSInputFile
@@ -10,11 +9,14 @@ from aiogram.types.inline_query_result_cached_sticker import InlineQueryResultCa
 from aiogram.types.inline_query_result_article import InlineQueryResultArticle
 from aiogram.types.input_text_message_content import InputTextMessageContent
 
+from middleware import Middleware
 from get_name import name
 from create_sticker import create_sticker
 from filter import MaxLenght, CommandPing, Filters
 
 router = Router()
+router.inline_query.middleware(Middleware())
+router.message.middleware(Middleware())
 
 init_ts = time.perf_counter()
 
@@ -41,15 +43,16 @@ async def max_lenght(message: types.Message):
 
 
 @router.message(F.text)
-async def answer_message(message: types.Message):
+async def answer_message(message: types.Message, statistics):
     if Filters.lenght(message.text):
         await message.answer(
             "Максимальная длина текста 70 символов"
         )
         return
 
-    path = await create_sticker(message.text, name)
+    path = await create_sticker(message.text, name, statistics.count)
     await message.answer_sticker(FSInputFile(path))
+    statistics += 1
     os.remove(path)
 
 
@@ -71,7 +74,7 @@ async def ping_inline(inline_query: types.InlineQuery, bot: Bot):
 
 
 @router.inline_query()
-async def answer_inline(inline_query: types.InlineQuery, bot: Bot):
+async def answer_inline(inline_query: types.InlineQuery, bot: Bot, statistics):
     if Filters.lenght(inline_query.query):
         await inline_query.answer([], is_personal=True,
                                   switch_pm_parameter="max_lenght",
@@ -79,7 +82,7 @@ async def answer_inline(inline_query: types.InlineQuery, bot: Bot):
         return
 
     results = []
-    path = await create_sticker(inline_query.query, name)
+    path = await create_sticker(inline_query.query, name, statistics.count)
     sticker = await bot.send_sticker(2028784660, FSInputFile(path))
     os.remove(path)
 
@@ -94,3 +97,4 @@ async def answer_inline(inline_query: types.InlineQuery, bot: Bot):
     )
     await sticker.delete()
     await inline_query.answer(results, is_personal=True)
+    statistics += 1

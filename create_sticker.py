@@ -2,10 +2,11 @@ import requests
 from asgiref.sync import sync_to_async
 import base64
 
-requests.post = sync_to_async(requests.post())
+requests.post = sync_to_async(requests.post)
 
 
 async def create_sticker(text: str, name, count):
+    name = str(name)
     path = f"./photo/{count}.png"
     json = {
         "type": "quote",
