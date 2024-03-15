@@ -12,7 +12,7 @@ from aiogram.types.input_text_message_content import InputTextMessageContent
 from middleware import Middleware
 from get_name import name
 from create_sticker import create_sticker
-from filter import MaxLenght, CommandPing, Filters
+from filter import MaxLenght, InlineCommand, Filters
 
 router = Router()
 router.inline_query.middleware(Middleware())
@@ -32,6 +32,13 @@ async def ping(message: types.Message):
 
     await message2.edit_text(
         f"🏓 Ping: {round((time.perf_counter_ns() - start) / 10 ** 6, 3)} ms\n📡 Uptime: {str(timedelta(seconds=uptime()))}"
+    )
+
+
+@router.message(Command("stat"))
+async def stat(message: types.Message, statistics):
+    await message.answer(
+        statistics.get_data()
     )
 
 
@@ -56,7 +63,21 @@ async def answer_message(message: types.Message, statistics):
     os.remove(path)
 
 
-@router.inline_query(CommandPing())
+@router.inline_query(InlineCommand("stat"))
+async def stat_inline(inline_query: types.InlineQuery, statistics):
+    text = statistics.get_data()
+    results = [InlineQueryResultArticle(
+        id="1",
+        title="📊 Статистика",
+        description=text,
+        input_message_content=InputTextMessageContent(
+            message_text=text
+        )
+    )]
+    await inline_query.answer(results, is_personal=True)
+
+
+@router.inline_query(InlineCommand("ping"))
 async def ping_inline(inline_query: types.InlineQuery, bot: Bot):
     start = time.perf_counter_ns()
     message = await bot.send_message(2028784660, "🌒")

@@ -12,7 +12,7 @@ class Name:
         with open("name.txt", "r", encoding="utf-8") as file:
             self.name = file.read()
 
-    def __str__(self, format_spec):
+    def __str__(self):
         return self.name
 
 

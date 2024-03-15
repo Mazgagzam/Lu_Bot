@@ -13,10 +13,11 @@ class Statistics:
         with open(self.data_path, "r") as file:
             data = json.load(file)
             self.count = data["count"]
+            self.users = data["users"]
 
     def save_data(self):
         with open(self.data_path, "w") as file:
-            json.dump(dict(self), file)
+            json.dump(self.__dict__(), file)
 
     def append(self, id: int):
         if id not in self.users:

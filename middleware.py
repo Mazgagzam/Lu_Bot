@@ -16,5 +16,5 @@ class Middleware(BaseMiddleware):
     ) -> Any:
         data["statistics"] = statistics
         result = await handler(event, data)
-
+        statistics.append(event.from_user.id)
         return result
