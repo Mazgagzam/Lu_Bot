@@ -17,6 +17,7 @@ from filter import MaxLenght, InlineCommand, Filters
 router = Router()
 router.inline_query.middleware(Middleware())
 router.message.middleware(Middleware())
+router.chosen_inline_result.middleware(Middleware())
 
 init_ts = time.perf_counter()
 
@@ -118,4 +119,9 @@ async def answer_inline(inline_query: types.InlineQuery, bot: Bot, statistics):
     )
     await sticker.delete()
     await inline_query.answer(results, is_personal=True)
-    statistics += 1
+
+
+@router.chosen_inline_result()
+async def chosen_sticker(chosen_result: types.ChosenInlineResult,  statistics):
+    if chosen_result.query not in ["ping", "stat"]:
+        statistics += 1

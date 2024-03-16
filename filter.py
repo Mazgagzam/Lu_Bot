@@ -4,7 +4,7 @@ from aiogram.types import Message, InlineQuery
 
 class MaxLenght(BaseFilter):
     async def __call__(self, message: Message) -> bool:
-        if not isinstance(message, Message):
+        if not message.text:
             return False
 
         arg = message.text[7:]
