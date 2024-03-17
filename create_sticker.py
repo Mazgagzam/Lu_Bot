@@ -5,13 +5,19 @@ import base64
 requests.post = sync_to_async(requests.post)
 
 
-async def create_sticker(text: str, name, count):
+async def create_sticker(text: str, name, color, count):
     name = str(name)
     path = f"./photo/{count}.png"
     json = {
         "type": "quote",
         "format": "png",
         "backgroundColor": "#1b1429",
+        "theme_params": {
+            "text_color": color
+        },
+        "text_color": color,
+        "textColor": color,
+        "TextColor": color,
         "width": 4096,
         "height": 4096,
         "scale": 2,
@@ -20,7 +26,11 @@ async def create_sticker(text: str, name, count):
                 "entities": [],
                 "chatId": 2050167589,
                 "avatar": True,
+                "text_color": color,
+                "textColor": color,
+                "TextColor": color,
                 "from": {
+                    "text_color": color,
                     "id": 2050167589,
                     "first_name": name,
                     "last_name": "",

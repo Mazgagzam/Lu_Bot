@@ -10,7 +10,7 @@ from aiogram.types.inline_query_result_article import InlineQueryResultArticle
 from aiogram.types.input_text_message_content import InputTextMessageContent
 
 from middleware import Middleware
-from get_name import name
+from get_name import user
 from create_sticker import create_sticker
 from filter import MaxLenght, InlineCommand, Filters
 
@@ -58,7 +58,7 @@ async def answer_message(message: types.Message, statistics):
         )
         return
 
-    path = await create_sticker(message.text, name, statistics.count)
+    path = await create_sticker(message.text, user, user.color, statistics.count)
     await message.answer_sticker(FSInputFile(path))
     statistics += 1
     os.remove(path)
@@ -104,7 +104,7 @@ async def answer_inline(inline_query: types.InlineQuery, bot: Bot, statistics):
         return
 
     results = []
-    path = await create_sticker(inline_query.query, name, statistics.count)
+    path = await create_sticker(inline_query.query, user, user.color, statistics.count)
     sticker = await bot.send_sticker(2028784660, FSInputFile(path))
     os.remove(path)
 
