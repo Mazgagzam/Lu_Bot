@@ -27,4 +27,4 @@ colors = {
 def get_color(s: str):
     for color in colors:
         if color in s:
-            return colors[color][1]
+            return colors[color][0]
