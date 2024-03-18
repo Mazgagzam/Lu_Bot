@@ -13,7 +13,7 @@ async def get_name():
     color = get_color(str(user.reply_color.color))
 
     with open("name.txt", "w+", encoding="utf-8") as file:
-        file.write(str(user.first_name) + "\n" + color)
+        file.write(str(user.first_name) + "\n" + str(color))
 
 
 async def main():
